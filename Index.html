@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SP Analytics — Dashboard Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: #f0f6ff; color: #1a2b4a; overflow-x: hidden; }
+
+    .hero-bg {
+      background: linear-gradient(170deg, #dbeeff 0%, #e8f4ff 40%, #f0f6ff 70%, #f5f8ff 100%);
+      position: relative; overflow: hidden;
+    }
+    .hero-bg::before {
+      content: ''; position: absolute; top: -80px; left: 50%;
+      transform: translateX(-50%); width: 900px; height: 500px;
+      background: radial-gradient(ellipse, rgba(147,210,255,0.38) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── FLOATING NAVBAR ── */
+    .floating-nav {
+      position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 200; background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(180,215,255,0.6); border-radius: 100px;
+      padding: 7px 8px; display: flex; align-items: center; justify-content: center; gap: 2px;
+      box-shadow: 0 4px 32px rgba(42,140,240,0.13), 0 1px 4px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+    }
+    .nav-item {
+      padding: 9px 28px; font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.07em; text-transform: uppercase; color: #7a9cc4;
+      border-radius: 100px; cursor: pointer; border: none; background: transparent;
+      font-family: 'Inter', sans-serif; transition: all 0.22s ease; white-space: nowrap;
+    }
+    .nav-item:hover { color: #1a6fc4; }
+    .nav-item.active { background: linear-gradient(135deg, #3a9cf8, #1a72cc); color: #fff; box-shadow: 0 3px 16px rgba(42,140,240,0.38); }
+
+    /* ── HERO ── */
+    .hero-section { padding: 150px 24px 90px; text-align: center; position: relative; z-index: 1; }
+    .platform-badge {
+      display: inline-flex; align-items: center; gap: 7px; padding: 7px 18px;
+      background: rgba(255,255,255,0.75); border: 1px solid rgba(150,200,255,0.55);
+      border-radius: 100px; font-size: 0.67rem; font-weight: 600;
+      letter-spacing: 0.13em; color: #4a7fc1; text-transform: uppercase;
+      margin-bottom: 30px; box-shadow: 0 1px 8px rgba(100,170,255,0.1);
+    }
+    .hero-title {
+      font-size: clamp(2rem, 5vw, 3.4rem); font-weight: 800; line-height: 1.1;
+      color: #0d1e38; margin-bottom: 22px; max-width: 920px;
+      margin-left: auto; margin-right: auto; letter-spacing: -0.02em;
+    }
+    .hero-desc { font-size: 0.96rem; line-height: 1.78; color: #4e6a8a; max-width: 720px; margin: 0 auto 40px; }
+    .hero-desc strong { color: #2278d4; font-weight: 600; }
+    .hero-desc b { color: #0d1e38; font-weight: 700; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 8px; padding: 14px 34px;
+      background: linear-gradient(135deg, #3a9cf8, #1a72cc); color: #fff;
+      font-size: 0.88rem; font-weight: 600; border-radius: 100px; cursor: pointer; border: none;
+      font-family: 'Inter', sans-serif; box-shadow: 0 4px 22px rgba(42,140,240,0.42);
+      transition: all 0.22s ease; letter-spacing: 0.01em;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(42,140,240,0.48); }
+
+    /* ── DASHBOARD SECTION ── */
+    .dashboard-section { background: #f4f8ff; padding: 76px 24px 100px; }
+    .section-head { text-align: center; margin-bottom: 28px; }
+    .section-head h2 { font-size: 1.75rem; font-weight: 800; color: #0d1e38; letter-spacing: -0.02em; }
+    .dash-inner { max-width: 1200px; margin: 0 auto; }
+
+    /* ── TAB BAR ── */
+    .tab-bar { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center; }
+    .tab-btn {
+      padding: 8px 18px; font-size: 0.77rem; font-weight: 500; border-radius: 7px; cursor: pointer;
+      border: 1.5px solid #ccddf0; background: #fff; color: #5e82aa;
+      font-family: 'Inter', sans-serif; transition: all 0.18s ease;
+    }
+    .tab-btn:hover { border-color: #3a9cf8; color: #1a72cc; }
+    .tab-btn.active { border-color: #3a9cf8; color: #1a72cc; background: rgba(58,156,248,0.07); font-weight: 600; }
+
+    /* ── EMBED WINDOW ── */
+    .embed-window { background: #fff; border-radius: 16px; border: 1px solid #dae8f8; box-shadow: 0 2px 28px rgba(42,100,200,0.08); overflow: hidden; }
+
+    /* ── TITLEBAR ── */
+    .embed-titlebar {
+      padding: 10px 16px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 1px solid #edf4fc; background: #fafcff; gap: 12px;
+    }
+    .titlebar-left { display: flex; align-items: center; gap: 10px; }
+    .titlebar-dots { display: flex; gap: 6px; align-items: center; }
+    .dot { width: 11px; height: 11px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #ffbd2e; }
+    .dot-g { background: #28c840; }
+    .titlebar-label { font-size: 0.7rem; font-weight: 500; color: #92b4d4; letter-spacing: 0.1em; text-transform: uppercase; }
+    .titlebar-controls { display: flex; align-items: center; gap: 6px; }
+
+    .zoom-badge {
+      font-size: 0.68rem; font-weight: 700; color: #5e82aa; background: #eef4fc;
+      border: 1px solid #ccddf0; border-radius: 100px; padding: 4px 10px;
+      min-width: 46px; text-align: center; font-family: 'Inter', sans-serif;
+    }
+    .zoom-btn {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; font-size: 1rem; font-weight: 700;
+      color: #5e82aa; background: #eef4fc; border: 1px solid #ccddf0; border-radius: 8px;
+      cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: all 0.18s ease; user-select: none; line-height: 1;
+    }
+    .zoom-btn:hover { background: #dbeeff; color: #1a72cc; border-color: #3a9cf8; }
+    .zoom-btn:active { transform: scale(0.92); }
+    .zoom-reset {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 28px; height: 28px; color: #5e82aa; background: #eef4fc;
+      border: 1px solid #ccddf0; border-radius: 8px; cursor: pointer; transition: all 0.18s ease;
+    }
+    .zoom-reset:hover { background: #dbeeff; color: #1a72cc; border-color: #3a9cf8; }
+    .zoom-reset:active { transform: scale(0.92); }
+    .titlebar-sep { width: 1px; height: 20px; background: #dae8f8; border-radius: 1px; flex-shrink: 0; }
+    .btn-open-tab {
+      display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase;
+      color: #5e82aa; background: #eef4fc; border: 1px solid #ccddf0; border-radius: 100px;
+      cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.18s ease; text-decoration: none;
+    }
+    .btn-open-tab:hover { background: #dbeeff; color: #1a72cc; border-color: #3a9cf8; }
+
+    .embed-body { background: #f7faff; }
+
+    .pbi-wrapper { width: 100%; overflow: hidden; background: #f7faff; position: relative; }
+    .pbi-wrapper iframe { width: 100%; height: 685px; border: 0; display: block; }
+
+    .menu-panel { display: none; }
+    .menu-panel.active { display: block; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-d1 { transition-delay: 0.1s; }
+    .reveal-d2 { transition-delay: 0.2s; }
+    .reveal-d3 { transition-delay: 0.3s; }
+    .reveal-d4 { transition-delay: 0.4s; }
+
+    footer { background: #fff; border-top: 1px solid #dae8f8; padding: 24px; }
+    footer .inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+    footer p { font-size: 0.71rem; color: #92b4d4; }
+  </style>
+</head>
+<body>
+
+  <!-- ============================================================
+    NAVBAR & HERO — di-render otomatis oleh script, tidak perlu diubah
+  ============================================================ -->
+  <nav class="floating-nav" id="main-nav"></nav>
+
+  <div class="hero-bg">
+    <section class="hero-section">
+      <div class="platform-badge reveal reveal-d1">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Service Part Analytics Platform
+      </div>
+      <h1 class="hero-title reveal reveal-d2">Visualization Service Part<br>Data in One Place</h1>
+      <p class="hero-desc reveal reveal-d3" id="hero-desc-text"></p>
+      <button class="cta-btn reveal reveal-d4" onclick="document.getElementById('dashboard').scrollIntoView({behavior:'smooth'})">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Explore Dashboards
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </button>
+    </section>
+  </div>
+
+  <section class="dashboard-section" id="dashboard">
+    <div class="section-head reveal"><h2>Dashboard Visualization</h2></div>
+    <div class="dash-inner" id="dash-panels"></div>
+  </section>
+
+  <footer>
+    <div class="inner"><p id="footer-text"></p></div>
+  </footer>
+
+  <script>
+  /* ============================================================
+    Cara menambah MENU BARU:
+      Tambahkan objek baru di dalam array "menus" dengan format:
+      {
+        id: "ID_UNIK",        ← huruf kapital, tanpa spasi
+        label: "Nama Menu",   ← nama yang tampil di navbar
+        tabs: [ ... ]         ← daftar tab di menu ini
+      }
+
+    Cara menambah TAB BARU ke menu yang sudah ada:
+      Tambahkan objek baru di dalam array "tabs" menu tersebut:
+      {
+        id: "id-unik-tab",      ← huruf kecil, boleh pakai strip
+        label: "Nama Tab",      ← nama yang tampil di tombol tab
+        reportId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",  ← Report ID dari Power BI
+        ctid: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"       ← Tenant ID (ctid) dari URL Power BI
+                                                           ← (opsional, default pakai CTID_DEFAULT)
+      }
+
+    Cara menemukan reportId & ctid:
+      Buka Power BI Service → klik REPORT → FILE → EMBED REPORT → WESBITE OR PORTAL → lihat URL "Link to embed this content" :
+      https://app.powerbi.com/reportEmbed?reportId=[INI_REPORT_ID]&ctid=[INI_CTID]
+  ============================================================ */
+
+  const CONFIG = {
+
+    /* Tenant ID default — digunakan jika tab tidak mendefinisikan ctid sendiri */
+    CTID_DEFAULT: "47c7b16b-d482-4147-b21a-04936dd89875",
+
+    /* Teks hero di bagian atas halaman */
+    heroDesc: `Akses seluruh dashboard visualization untuk area <strong>Service Part</strong> untuk area.<br>
+      <b>CCR</b>, <b>Procurement</b>, dan <b>Warehouse</b> secara real-time
+      melalui Power BI yang terintegrasi.`,
+
+    /* Teks footer */
+    footerText: "© 2026 Service Part X Smart Seamless Logistics.",
+
+    /* ── DAFTAR MENU & TAB ─────────────────────────────────── */
+    menus: [
+
+      /* ── CCR ─────────────────────────────────────────────── */
+      {
+        id: "CCR",
+        label: "CCR",
+        tabs: [
+          {
+            id: "ccr-productivity",
+            label: "Productivity",
+            reportId: "efb5cb4c-5731-4c42-8628-e1075d5fb006",
+          },
+          {
+            id: "ccr-progress",
+            label: "Progress Achievement",
+            reportId: "f1c69647-6e1c-44f8-95f3-73d7776d76d6",
+          },
+          {
+            id: "ccr-reporting",
+            label: "Reporting",
+            reportId: "6c487500-7b2c-4788-bc8f-5376856e4288",
+          },
+          /* Tambah tab CCR baru di bawah baris ini, sebelum ] */
+
+        ]
+      },
+
+      /* ── PROCUREMENT ─────────────────────────────────────── */
+      {
+        id: "PROCUREMENT",
+        label: "Procurement",
+        tabs: [
+          {
+            id: "proc-afr",
+            label: "Allocation Fill Rate",
+            reportId: "2193eac8-ce4c-430e-a7f0-05717411b8d7",
+          },
+          {
+            id: "proc-backorder",
+            label: "Back Order",
+            reportId: "4881a20a-d607-402f-8b99-91710838a2fa",
+          },
+          {
+            id: "proc-daily",
+            label: "Daily Monitoring",
+            reportId: "d97a81e3-e352-43a2-99fa-046347076319",
+          },
+          {
+            id: "proc-ddd",
+            label: "DDD Supplier",
+            reportId: "8147ce43-96cf-454a-96f1-09a91d5f5a03",
+          },
+          {
+            id: "proc-inventory",
+            label: "Inventory Management",
+            reportId: "17fc981f-c549-4c9c-adcd-37565fcdea1f",
+          },
+          /* Tambah tab Procurement baru di bawah baris ini, sebelum ] */
+        ]
+      },
+
+      /* ── WAREHOUSE ───────────────────────────────────────── */
+      {
+        id: "WAREHOUSE",
+        label: "Warehouse",
+        tabs: [
+          {
+            id: "wh-sfr",
+            label: "Storage Fill Rate",
+            reportId: "f573ff1b-0576-467a-ad15-d241ea9da488",
+          },
+          
+          /* Tambah tab Warehouse baru di bawah baris ini, sebelum ] */
+        ]
+      },
+
+      /* Tambah menu baru di bawah baris ini, sebelum ] */
+
+    ] /* akhir menus */
+
+  }; /* akhir CONFIG */
+
+  /* ============================================================
+    ENGINE — jangan ubah bagian di bawah ini
+  ============================================================ */
+
+  const ZOOM_STEP = 0.1, ZOOM_MIN = 0.4, ZOOM_MAX = 2.5, BASE_H = 685;
+  const tabZoom = {}, activeTab = {}, groupZoomBadge = {}, groupLbl = {}, groupOpenTab = {};
+
+  function getPbiUrl(tab) {
+    const ctid = tab.ctid || CONFIG.CTID_DEFAULT;
+    return `https://app.powerbi.com/reportEmbed?reportId=${tab.reportId}&autoAuth=true&ctid=${ctid}&filterPaneEnabled=false`;
+  }
+
+  function getOpenTabUrl(tab) {
+    const ctid = tab.ctid || CONFIG.CTID_DEFAULT;
+    return `https://app.powerbi.com/reportEmbed?reportId=${tab.reportId}&autoAuth=true&ctid=${ctid}`;
+  }
+
+  /* ── Build DOM dari CONFIG ── */
+  function buildNav() {
+    const nav = document.getElementById('main-nav');
+    CONFIG.menus.forEach((menu, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'nav-item' + (i === 0 ? ' active' : '');
+      btn.textContent = menu.label;
+      btn.onclick = () => switchMenu(menu.id, btn);
+      nav.appendChild(btn);
+    });
+  }
+
+  function buildPanels() {
+    const container = document.getElementById('dash-panels');
+
+    CONFIG.menus.forEach((menu, mi) => {
+      const firstTab = menu.tabs[0];
+      activeTab[menu.id] = firstTab.id;
+      groupZoomBadge[menu.id] = `zoom-badge-${menu.id}`;
+      groupLbl[menu.id]       = `lbl-${menu.id}`;
+      groupOpenTab[menu.id]   = `opentab-${menu.id}`;
+
+      /* panel wrapper */
+      const panel = document.createElement('div');
+      panel.className = 'menu-panel' + (mi === 0 ? ' active' : '');
+      panel.id = `panel-${menu.id}`;
+
+      /* tab bar */
+      const tabBar = document.createElement('div');
+      tabBar.className = 'tab-bar';
+      menu.tabs.forEach((tab, ti) => {
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn' + (ti === 0 ? ' active' : '');
+        btn.textContent = tab.label;
+        btn.onclick = () => switchTab(tab.id, menu.id, btn, menu, tab);
+        tabBar.appendChild(btn);
+      });
+      panel.appendChild(tabBar);
+
+      /* embed window */
+      const win = document.createElement('div');
+      win.className = 'embed-window';
+
+      /* titlebar */
+      win.innerHTML = `
+        <div class="embed-titlebar">
+          <div class="titlebar-left">
+            <div class="titlebar-dots">
+              <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
+            </div>
+            <span class="titlebar-label" id="lbl-${menu.id}">${menu.label.toUpperCase()} — ${firstTab.label}</span>
+          </div>
+          <div class="titlebar-controls">
+            <button class="zoom-btn" onclick="zoomOut('${menu.id}')" title="Zoom Out">−</button>
+            <span class="zoom-badge" id="zoom-badge-${menu.id}">100%</span>
+            <button class="zoom-btn" onclick="zoomIn('${menu.id}')" title="Zoom In">+</button>
+            <button class="zoom-reset" onclick="zoomReset('${menu.id}')" title="Reset Zoom">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            </button>
+            <div class="titlebar-sep"></div>
+            <a class="btn-open-tab" id="opentab-${menu.id}" href="${getOpenTabUrl(firstTab)}" target="_blank">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Open New Tab
+            </a>
+          </div>
+        </div>`;
+
+      /* embed body */
+      const body = document.createElement('div');
+      body.className = 'embed-body';
+
+      menu.tabs.forEach((tab, ti) => {
+        const content = document.createElement('div');
+        content.className = 'tab-content' + (ti === 0 ? ' active' : '');
+        content.id = tab.id;
+        content.innerHTML = `
+          <div class="pbi-wrapper" id="wrap-${tab.id}">
+            <iframe title="${tab.label} Visualization"
+              src="${getPbiUrl(tab)}"
+              allowfullscreen="true"></iframe>
+          </div>`;
+        body.appendChild(content);
+      });
+
+      win.appendChild(body);
+      panel.appendChild(win);
+      container.appendChild(panel);
+    });
+  }
+
+  /* ── Hero desc & footer ── */
+  function buildMeta() {
+    document.getElementById('hero-desc-text').innerHTML = CONFIG.heroDesc;
+    document.getElementById('footer-text').textContent  = CONFIG.footerText;
+  }
+
+  /* ── Zoom helpers ── */
+  function getZoom(tabId) {
+    if (tabZoom[tabId] === undefined) tabZoom[tabId] = 1;
+    return tabZoom[tabId];
+  }
+  function applyZoom(tabId) {
+    const wrapper = document.querySelector('#' + tabId + ' .pbi-wrapper');
+    if (!wrapper) return;
+    const iframe = wrapper.querySelector('iframe');
+    if (!iframe) return;
+    const z = getZoom(tabId);
+    iframe.style.zoom   = z;
+    iframe.style.height = Math.round(BASE_H / z) + 'px';
+  }
+  function updateBadge(group) {
+    const tabId = activeTab[group];
+    const z = getZoom(tabId);
+    const badge = document.getElementById(groupZoomBadge[group]);
+    if (badge) badge.textContent = Math.round(z * 100) + '%';
+  }
+  function zoomIn(group) {
+    const tabId = activeTab[group];
+    tabZoom[tabId] = Math.min(ZOOM_MAX, +((getZoom(tabId) + ZOOM_STEP).toFixed(2)));
+    applyZoom(tabId); updateBadge(group);
+  }
+  function zoomOut(group) {
+    const tabId = activeTab[group];
+    tabZoom[tabId] = Math.max(ZOOM_MIN, +((getZoom(tabId) - ZOOM_STEP).toFixed(2)));
+    applyZoom(tabId); updateBadge(group);
+  }
+  function zoomReset(group) {
+    const tabId = activeTab[group];
+    tabZoom[tabId] = 1;
+    applyZoom(tabId); updateBadge(group);
+  }
+
+  /* ── Switch menu ── */
+  function switchMenu(menuId, btn) {
+    document.querySelectorAll('.menu-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    document.getElementById('panel-' + menuId).classList.add('active');
+    btn.classList.add('active');
+    document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ── Switch tab ── */
+  function switchTab(tabId, group, btn, menu, tab) {
+    btn.closest('.tab-bar').querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.closest('.menu-panel').querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById(tabId).classList.add('active');
+    activeTab[group] = tabId;
+
+    const lbl = document.getElementById(groupLbl[group]);
+    if (lbl) lbl.textContent = `${menu.label.toUpperCase()} — ${tab.label}`;
+
+    const openBtn = document.getElementById(groupOpenTab[group]);
+    if (openBtn) openBtn.href = getOpenTabUrl(tab);
+
+    updateBadge(group);
+    applyZoom(tabId);
+  }
+
+  /* ── Scroll reveal ── */
+  function initReveal() {
+    const obs = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); }),
+      { threshold: 0.1 }
+    );
+    document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+  }
+
+  /* ── INIT ── */
+  buildNav();
+  buildPanels();
+  buildMeta();
+  initReveal();
+  </script>
+</body>
+</html>
