@@ -23,7 +23,7 @@
   <div id="app" v-cloak class="min-h-screen pb-20">
     <header class="bg-white shadow">
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-        <h1 class="text-3xl font-bold leading-tight text-gray-900">CMS Admin Panel</h1>
+        <h1 class="text-3xl font-bold leading-tight text-gray-900">Admin CMS - Service Part Visualization</h1>
       </div>
     </header>
 
@@ -65,9 +65,20 @@
       <!-- Editor Panel -->
       <div v-if="isAuthenticated && config" class="space-y-6">
 
-        <div class="flex justify-between items-center mb-4">
-          <p class="text-gray-600">Connected to <strong>{{ auth.owner }}/{{ auth.repo }}</strong></p>
-          <button @click="logout" class="text-sm text-red-600 hover:underline">Disconnect</button>
+        <div class="flex flex-col sm:flex-row sm:justify-between items-start sm:items-center mb-4 gap-4">
+          <p class="text-gray-600">Connected to GitHub : <strong>{{ auth.owner }}/{{ auth.repo }}</strong></p>
+          <div class="flex items-center gap-4">
+            <button @click="showSop = true"
+              class="flex items-center gap-2 text-sm px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 rounded-md font-medium transition">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              Lihat Panduan Penggunaan
+            </button>
+            <button @click="logout"
+              class="text-sm px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 rounded-md font-medium transition">Disconnect</button>
+          </div>
         </div>
 
         <!-- Global Settings -->
@@ -140,7 +151,7 @@
                 class="bg-white border p-3 rounded-md mb-3 flex gap-4 items-start shadow-sm">
                 <div class="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-3">
                   <div>
-                    <label class="block text-[10px] uppercase text-gray-500">Tab ID</label>
+                    <label class="block text-[10px] uppercase text-gray-500">Tab ID (Unique ID Tab)</label>
                     <input v-model="tab.id" type="text"
                       class="mt-1 block w-full text-sm border-gray-300 border rounded py-1 px-2">
                   </div>
@@ -184,33 +195,36 @@
       </div>
     </main>
 
-    <!-- Floating Help Button -->
-    <button @click="showSop = true" class="fixed bottom-6 right-6 bg-indigo-600 text-white p-4 rounded-full shadow-lg hover:bg-indigo-700 transition flex items-center justify-center z-40" title="Panduan Penggunaan">
-      <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-    </button>
 
     <!-- SOP Modal -->
-    <div v-if="showSop" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div v-if="showSop" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog"
+      aria-modal="true">
       <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         <!-- Background overlay -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showSop = false" aria-hidden="true"></div>
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="showSop = false"
+          aria-hidden="true"></div>
 
         <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
 
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+        <div
+          class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
             <div class="sm:flex sm:items-start">
               <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
-                <h3 class="text-xl leading-6 font-semibold text-gray-900 mb-4" id="modal-title">SOP / Panduan Penggunaan CMS</h3>
-                
+                <h3 class="text-xl leading-6 font-semibold text-gray-900 mb-4" id="modal-title">SOP / Panduan Penggunaan
+                  CMS</h3>
+
                 <div class="mt-2 text-sm text-gray-600 space-y-4 max-h-[60vh] overflow-y-auto pr-2">
                   <div>
                     <h4 class="font-semibold text-gray-800">1. Konfigurasi Awal (Login)</h4>
-                    <p>Agar bisa menyimpan data, Anda membutuhkan <strong>Personal Access Token (PAT)</strong> dari GitHub.</p>
+                    <p>Agar bisa menyimpan data, Anda membutuhkan <strong>Personal Access Token (PAT)</strong> dari
+                      GitHub.</p>
                     <ul class="list-disc ml-5 mt-1 space-y-1">
-                      <li>Buka konfigurasi GitHub: <strong>Settings &gt; Developer settings &gt; Personal access tokens &gt; Tokens (classic)</strong>.</li>
+                      <li>Buka konfigurasi GitHub: <strong>Settings &gt; Developer settings &gt; Personal access tokens
+                          &gt; Tokens (classic)</strong>.</li>
                       <li>Generate new token, beri nama, dan <strong>centang opsi scopes 'repo'</strong>.</li>
-                      <li>Copy token tersebut (berawalan <code>ghp_</code>) dan paste ke form login Admin Panel ini.</li>
+                      <li>Copy token tersebut (berawalan <code>ghp_</code>) dan paste ke form login Admin Panel ini.
+                      </li>
                     </ul>
                   </div>
                   <div>
@@ -227,20 +241,25 @@
                     <ul class="list-disc ml-5 mt-1 space-y-1">
                       <li>Buka report di Power BI Service.</li>
                       <li>Pilih menu <strong>File &gt; Embed report &gt; Website or portal</strong>.</li>
-                      <li>Perhatikan URL pada popup yang muncul. Salin bagian ID-nya.<br>Contoh: <code>...reportId=<strong>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</strong>&amp;ctid...</code></li>
+                      <li>Perhatikan URL pada popup yang muncul. Salin bagian ID-nya.<br>Contoh:
+                        <code>...reportId=<strong>xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx</strong>&amp;ctid...</code>
+                      </li>
                       <li>Paste ID tersebut ke dalam kolom <strong>Power BI Report ID</strong> pada Form.</li>
                     </ul>
                   </div>
                   <div>
                     <h4 class="font-semibold text-gray-800">4. Menyimpan Perubahan</h4>
-                    <p>Setelah selesai mengubah Menu/Tab, klik <strong>Save & Publish to GitHub</strong> di pojok kanan bawah. Sistem akan otomatis melakukan <em>commit</em> ke repository GitHub Anda. Mohon tunggu beberapa detik hingga muncul notifikasi keberhasilan.</p>
+                    <p>Setelah selesai mengubah Menu/Tab, klik <strong>Save & Publish to GitHub</strong> di pojok kanan
+                      bawah. Sistem akan otomatis melakukan <em>commit</em> ke repository GitHub Anda. Mohon tunggu
+                      beberapa detik hingga muncul notifikasi keberhasilan.</p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t">
-            <button type="button" @click="showSop = false" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
+            <button type="button" @click="showSop = false"
+              class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
               Saya Mengerti
             </button>
           </div>
@@ -313,14 +332,19 @@
         };
 
         const logout = () => {
-          localStorage.removeItem('gh_owner');
-          localStorage.removeItem('gh_repo');
-          localStorage.removeItem('gh_token');
-          isAuthenticated.value = false;
-          config.value = null;
+          if (confirm('Are you sure you want to disconnect? Unsaved changes will not be pushed to GitHub.')) {
+            localStorage.removeItem('gh_owner');
+            localStorage.removeItem('gh_repo');
+            localStorage.removeItem('gh_token');
+            isAuthenticated.value = false;
+            config.value = null;
+          }
         };
 
         const saveToGithub = async () => {
+          if (!confirm('Anda yakin ingin menyiman dan mempublikasikan perubahan ini secara live ke GitHub?')) {
+            return;
+          }
           isSaving.value = true;
           errorMsg.value = '';
           successMsg.value = '';
