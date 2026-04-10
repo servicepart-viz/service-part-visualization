@@ -510,29 +510,6 @@
   </footer>
 
   <script>
-    /* ============================================================
-      Cara menambah MENU BARU:
-        Tambahkan objek baru di dalam array "menus" dengan format:
-        {
-          id: "ID_UNIK",        ← huruf kapital, tanpa spasi
-          label: "Nama Menu",   ← nama yang tampil di navbar
-          tabs: [ ... ]         ← daftar tab di menu ini
-        }
-  
-      Cara menambah TAB BARU ke menu yang sudah ada:
-        Tambahkan objek baru di dalam array "tabs" menu tersebut:
-        {
-          id: "id-unik-tab",      ← huruf kecil, boleh pakai strip
-          label: "Nama Tab",      ← nama yang tampil di tombol tab
-          reportId: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",  ← Report ID dari Power BI
-          ctid: "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"       ← Tenant ID (ctid) dari URL Power BI
-                                                             ← (opsional, default pakai CTID_DEFAULT)
-        }
-  
-      Cara menemukan reportId & ctid:
-        Buka Power BI Service → klik REPORT → FILE → EMBED REPORT → WESBITE OR PORTAL → lihat URL "Link to embed this content" :
-        https://app.powerbi.com/reportEmbed?reportId=[INI_REPORT_ID]&ctid=[INI_CTID]
-    ============================================================ */
 
     let CONFIG = {};
 
