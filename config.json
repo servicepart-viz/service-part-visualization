@@ -1,0 +1,70 @@
+{
+  "CTID_DEFAULT": "47c7b16b-d482-4147-b21a-04936dd89875",
+  "heroDesc": "Akses seluruh dashboard visualization untuk area <strong>Service Part</strong> untuk area.<br>\n      <b>CCR</b>, <b>Procurement</b>, dan <b>Warehouse</b> secara real-time\n      melalui Power BI yang terintegrasi.",
+  "footerText": "© 2026 Service Part X Smart Seamless Logistics.",
+  "menus": [
+    {
+      "id": "CCR",
+      "label": "CCR",
+      "tabs": [
+        {
+          "id": "ccr-productivity",
+          "label": "Productivity",
+          "reportId": "efb5cb4c-5731-4c42-8628-e1075d5fb006"
+        },
+        {
+          "id": "ccr-progress",
+          "label": "Progress Achievement",
+          "reportId": "f1c69647-6e1c-44f8-95f3-73d7776d76d6"
+        },
+        {
+          "id": "ccr-reporting",
+          "label": "Reporting",
+          "reportId": "6c487500-7b2c-4788-bc8f-5376856e4288"
+        }
+      ]
+    },
+    {
+      "id": "PROCUREMENT",
+      "label": "Procurement",
+      "tabs": [
+        {
+          "id": "proc-afr",
+          "label": "Allocation Fill Rate",
+          "reportId": "2193eac8-ce4c-430e-a7f0-05717411b8d7"
+        },
+        {
+          "id": "proc-backorder",
+          "label": "Back Order",
+          "reportId": "4881a20a-d607-402f-8b99-91710838a2fa"
+        },
+        {
+          "id": "proc-daily",
+          "label": "Daily Monitoring",
+          "reportId": "d97a81e3-e352-43a2-99fa-046347076319"
+        },
+        {
+          "id": "proc-ddd",
+          "label": "DDD Supplier",
+          "reportId": "8147ce43-96cf-454a-96f1-09a91d5f5a03"
+        },
+        {
+          "id": "proc-inventory",
+          "label": "Inventory Management",
+          "reportId": "17fc981f-c549-4c9c-adcd-37565fcdea1f"
+        }
+      ]
+    },
+    {
+      "id": "WAREHOUSE",
+      "label": "Warehouse",
+      "tabs": [
+        {
+          "id": "wh-sfr",
+          "label": "Storage Fill Rate",
+          "reportId": "f573ff1b-0576-467a-ad15-d241ea9da488"
+        }
+      ]
+    }
+  ]
+}
