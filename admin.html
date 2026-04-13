@@ -37,11 +37,27 @@
                 class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Username">
             </div>
-            <div>
+            <div class="relative">
               <label for="password" class="sr-only">Password</label>
-              <input id="password" v-model="appLoginAuth.password" type="password" required
-                class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
+              <input id="password" v-model="appLoginAuth.password" :type="showAppPassword ? 'text' : 'password'"
+                required
+                class="appearance-none rounded-none relative block w-full px-3 py-2 pr-10 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
                 placeholder="Password">
+              <button type="button" @click="showAppPassword = !showAppPassword"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center z-20">
+                <svg v-if="!showAppPassword" class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none"
+                  viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <svg v-else class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                </svg>
+              </button>
             </div>
           </div>
           <div>
@@ -80,24 +96,29 @@
           <p class="text-sm text-gray-600 mb-6">Enter your GitHub credentials to edit the configuration directly on your
             repository.</p>
 
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">Repository Owner</label>
-            <input v-model="auth.owner" type="text" placeholder="e.g., istd-toyota"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700">Repository Name</label>
-            <input v-model="auth.repo" type="text" placeholder="e.g., service-part-visualization"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-          </div>
-
           <div class="mb-6">
             <label class="block text-sm font-medium text-gray-700">Personal Access Token (PAT)</label>
-            <input v-model="auth.token" type="password" placeholder="ghp_*****************"
-              class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-            <p class="text-xs text-gray-500 mt-1">Requires 'repo' scope. <a href="https://github.com/settings/tokens"
-                target="_blank" class="text-blue-500 hover:text-blue-700">Get a token here</a>.</p>
+            <div class="relative mt-1">
+              <input v-model="auth.token" :type="showPAT ? 'text' : 'password'" placeholder="ghp_*****************"
+                class="block w-full border border-gray-300 rounded-md shadow-sm py-2 pl-3 pr-10 focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+              <button type="button" @click="showPAT = !showPAT"
+                class="absolute inset-y-0 right-0 pr-3 flex items-center z-10">
+                <svg v-if="!showPAT" class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                </svg>
+                <svg v-else class="h-5 w-5 text-gray-400 hover:text-gray-600" fill="none" viewBox="0 0 24 24"
+                  stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18" />
+                </svg>
+              </button>
+            </div>
+            <p class="text-xs text-gray-500 mt-1">Requires 'repo' scope. Owner dan Name repository telah diatur secara
+              otomatis ke servicepart-viz/service-part-visualization.</p>
           </div>
 
           <button @click="login" :disabled="isLoading"
@@ -138,7 +159,7 @@
           <div class="bg-white p-6 rounded-lg shadow">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Global Settings</h2>
 
-            <div class="mb-4">
+            <div class="mb-4 hidden">
               <label class="block text-sm font-medium text-gray-700">Default Tenant ID (CTID)</label>
               <input v-model="config.CTID_DEFAULT" type="text"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 font-mono text-sm">
@@ -150,7 +171,7 @@
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 font-mono text-sm"></textarea>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-4 hidden">
               <label class="block text-sm font-medium text-gray-700">Footer Text</label>
               <input v-model="config.footerText" type="text"
                 class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3">
@@ -344,6 +365,8 @@
       setup() {
         const appLoginAuth = reactive({ username: '', password: '' });
         const isAppLogin = ref(localStorage.getItem('app_loggedIn') === 'true');
+        const showAppPassword = ref(false);
+        const showPAT = ref(false);
         const loginError = ref('');
 
         const doAppLogin = () => {
@@ -363,19 +386,14 @@
           if (isConfirmed) {
             isAppLogin.value = false;
             localStorage.removeItem('app_loggedIn');
-
-            // Log out from github as well, without showing a secondary prompt
-            localStorage.removeItem('gh_owner');
-            localStorage.removeItem('gh_repo');
-            localStorage.removeItem('gh_token');
             isAuthenticated.value = false;
             config.value = null;
           }
         };
 
         const auth = reactive({
-          owner: localStorage.getItem('gh_owner') || '',
-          repo: localStorage.getItem('gh_repo') || '',
+          owner: 'servicepart-viz',
+          repo: 'service-part-visualization',
           token: localStorage.getItem('gh_token') || ''
         });
 
@@ -542,7 +560,7 @@
         });
 
         return {
-          appLoginAuth, isAppLogin, loginError, doAppLogin, Logout,
+          appLoginAuth, isAppLogin, loginError, doAppLogin, Logout, showAppPassword, showPAT,
           auth, isAuthenticated, isLoading, isSaving, config, errorMsg, successMsg, showSop,
           login, dissconnect, saveToGithub, addMenu, removeMenu, addTab, removeTab, exportJson
         };
